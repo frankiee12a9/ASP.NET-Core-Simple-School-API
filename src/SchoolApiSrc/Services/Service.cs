@@ -20,10 +20,11 @@ namespace SchoolApiSrc.Services
             _db = context.Set<T>();
         }
 
-        public async Task CreateA(T identity)
+        public async Task Create(T identity)
         {
             await _db.AddAsync(identity);
         }
+
 
         public async Task<T> Get(int id)
         {
@@ -55,7 +56,8 @@ namespace SchoolApiSrc.Services
             return await query.ToListAsync();
         }
 
-        public async Task<T> GetFirstOrDefault(Expression<Func<T, bool>> filter = null, string includeProperties = null)
+        public async Task<T> GetFirstOrDefault(Expression<Func<T, bool>> filter = null,
+                string includeProperties = null)
         {
             IQueryable<T> query = _db;
 
@@ -75,6 +77,10 @@ namespace SchoolApiSrc.Services
             return await query.FirstOrDefaultAsync();
         }
 
+        public bool isExists(int id)
+        {
+            throw new NotImplementedException();
+        }
 
         public void Remove(T identity)
         {
@@ -92,5 +98,7 @@ namespace SchoolApiSrc.Services
             var objectToUpdate = _db.Find(id);
             _db.Update(objectToUpdate);
         }
+
+
     }
 }

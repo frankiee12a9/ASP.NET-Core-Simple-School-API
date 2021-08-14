@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "R5hiVFI65BNdAVVpGfMQuzNPCq+SQrtCu4W6WTXA2bCzRSQtmH0hrewGcBtsz501LTL5Q1k/g3wZYmSeSHTwug==",
+  "dgSpecHash": "SJ5L7QXARA0+4M45x5lAbn+xvzQgvY1JV6F4zLk3hZkvzMYP4yy8mE8A5ijQpusUkfdiZCPaLiN8CIBeZS9c3w==",
   "success": true,
-  "projectFilePath": "C:\\Users\\PC_1\\Desktop\\schoolAPi\\test\\SchoolApiTest\\SchoolApiTest.csproj",
+  "projectFilePath": "C:\\Users\\PC_1\\Desktop\\SchoolApi\\test\\SchoolApiTest\\SchoolApiTest.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\PC_1\\.nuget\\packages\\coverlet.collector\\3.0.2\\coverlet.collector.3.0.2.nupkg.sha512",
     "C:\\Users\\PC_1\\.nuget\\packages\\microsoft.codecoverage\\16.9.4\\microsoft.codecoverage.16.9.4.nupkg.sha512",

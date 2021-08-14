@@ -13,6 +13,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SchoolApiSrc.Data;
+using SchoolApiSrc.Services;
+using SchoolApiSrc.Services.IServices;
 
 namespace SchoolApiSrc
 {
@@ -33,6 +35,8 @@ namespace SchoolApiSrc
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
 
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+
             // services.AddControllers().AddNewtonsoftJson(x =>
             //  x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
@@ -52,12 +56,12 @@ namespace SchoolApiSrc
                 // app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SchoolApiSrc v1"));
             }
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            // app.UseHttpsRedirection();
+            // app.UseStaticFiles();
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            // app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

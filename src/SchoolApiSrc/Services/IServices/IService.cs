@@ -21,8 +21,9 @@ namespace SchoolApiSrc.Services.IServices
         );
 
         void RemoveById(int id);
-        Task CreateA(T identity);
+        Task Create(T identity);
         void Update(int id);
         void Remove(T identity);
+        bool isExists(int id);
     }
 }

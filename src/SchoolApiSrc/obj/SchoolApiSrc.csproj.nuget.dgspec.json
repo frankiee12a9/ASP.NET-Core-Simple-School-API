@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\PC_1\\Desktop\\schoolAPi\\src\\SchoolAPISrc\\SchoolApiSrc.csproj": {}
+    "C:\\Users\\PC_1\\Desktop\\SchoolApi\\src\\SchoolApiSrc\\SchoolApiSrc.csproj": {}
   },
   "projects": {
-    "C:\\Users\\PC_1\\Desktop\\schoolAPi\\src\\SchoolAPISrc\\SchoolApiSrc.csproj": {
+    "C:\\Users\\PC_1\\Desktop\\SchoolApi\\src\\SchoolApiSrc\\SchoolApiSrc.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PC_1\\Desktop\\schoolAPi\\src\\SchoolAPISrc\\SchoolApiSrc.csproj",
+        "projectUniqueName": "C:\\Users\\PC_1\\Desktop\\SchoolApi\\src\\SchoolApiSrc\\SchoolApiSrc.csproj",
         "projectName": "SchoolApiSrc",
-        "projectPath": "C:\\Users\\PC_1\\Desktop\\schoolAPi\\src\\SchoolAPISrc\\SchoolApiSrc.csproj",
+        "projectPath": "C:\\Users\\PC_1\\Desktop\\SchoolApi\\src\\SchoolApiSrc\\SchoolApiSrc.csproj",
         "packagesPath": "C:\\Users\\PC_1\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PC_1\\Desktop\\schoolAPi\\src\\SchoolAPISrc\\obj\\",
+        "outputPath": "C:\\Users\\PC_1\\Desktop\\SchoolApi\\src\\SchoolApiSrc\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\PC_1\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -28,8 +28,8 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "C:\\Users\\PC_1\\Desktop\\schoolAPi\\test\\SchoolApiTest\\SchoolApiTest.csproj": {
-                "projectPath": "C:\\Users\\PC_1\\Desktop\\schoolAPi\\test\\SchoolApiTest\\SchoolApiTest.csproj"
+              "C:\\Users\\PC_1\\Desktop\\SchoolApi\\test\\SchoolApiTest\\SchoolApiTest.csproj": {
+                "projectPath": "C:\\Users\\PC_1\\Desktop\\SchoolApi\\test\\SchoolApiTest\\SchoolApiTest.csproj"
               }
             }
           }
@@ -62,6 +62,10 @@
               "target": "Package",
               "version": "[5.0.2, )"
             },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[5.6.3, )"
@@ -89,14 +93,14 @@
         }
       }
     },
-    "C:\\Users\\PC_1\\Desktop\\schoolAPi\\test\\SchoolApiTest\\SchoolApiTest.csproj": {
+    "C:\\Users\\PC_1\\Desktop\\SchoolApi\\test\\SchoolApiTest\\SchoolApiTest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PC_1\\Desktop\\schoolAPi\\test\\SchoolApiTest\\SchoolApiTest.csproj",
+        "projectUniqueName": "C:\\Users\\PC_1\\Desktop\\SchoolApi\\test\\SchoolApiTest\\SchoolApiTest.csproj",
         "projectName": "SchoolApiTest",
-        "projectPath": "C:\\Users\\PC_1\\Desktop\\schoolAPi\\test\\SchoolApiTest\\SchoolApiTest.csproj",
+        "projectPath": "C:\\Users\\PC_1\\Desktop\\SchoolApi\\test\\SchoolApiTest\\SchoolApiTest.csproj",
         "packagesPath": "C:\\Users\\PC_1\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PC_1\\Desktop\\schoolAPi\\test\\SchoolApiTest\\obj\\",
+        "outputPath": "C:\\Users\\PC_1\\Desktop\\SchoolApi\\test\\SchoolApiTest\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\PC_1\\AppData\\Roaming\\NuGet\\NuGet.Config",
