@@ -2,8 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SchoolApiSrc.DTOs;
 using SchoolApiSrc.Models;
 using SchoolApiSrc.Services.IServices;
 
@@ -14,19 +18,21 @@ namespace SchoolApiSrc.Controllers
     public class CourseController : ControllerBase
     {
         private IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public CourseController(IUnitOfWork unitOfWork)
+        public CourseController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Course>> GetCourseById(int id)
+        [HttpGet("{id:int}", Name = nameof(GetCourseById))]
+        public async Task<ActionResult<CourseReadDTO>> GetCourseById(int id)
         {
             var course = await _unitOfWork.CourseService
                 .GetFirstOrDefault(
                     filter: c => c.CourseId == id,
-                    includeProperties: "Department"
+                    includeProperties: "Department,CourseEnrollments,CourseAssignments"
                 );
 
             if (course is null)
@@ -34,30 +40,46 @@ namespace SchoolApiSrc.Controllers
                 return NotFound();
             }
 
-            return Ok(course);
+            var objDto = _mapper.Map<CourseReadDTO>(course);
+            return Ok(objDto);
         }
+
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Course>>> GetAllCourses()
+        public async Task<ActionResult<IEnumerable<CourseReadDTO>>> GetAllCourses()
         {
-            var courses = await _unitOfWork.CourseService.GetAll(includeProperties: "Department");
-            return Ok(courses);
+            var courses = await _unitOfWork.CourseService
+                .GetAll(includeProperties: "Department,CourseEnrollments,CourseAssignments");
+
+            var objDto = new List<CourseReadDTO>();
+            foreach (var course in courses)
+            {
+                objDto.Add(_mapper.Map<CourseReadDTO>(course));
+            }
+
+            return Ok(objDto);
         }
 
-        [HttpPut("{id}")]
-        public ActionResult PutCourse(int id, [FromBody] Course course)
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> PutCourse(int id, [FromBody] CourseUpdateDTO courseDto)
         {
-            if (id != course.CourseId)
+            if (courseDto is null)
             {
                 return BadRequest();
             }
 
+            var entity = _unitOfWork.CourseService.Get(id);
+            if (entity is null)
+            {
+                return NotFound();
+            }
+
+            _mapper.Map(courseDto, entity);
             try
             {
-                _unitOfWork.CourseService.Update(id);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (DbUpdateConcurrencyException)
             {
                 ModelState.AddModelError(nameof(PutCourse), "unable to save changes");
                 return StatusCode(500, ModelState);
@@ -67,22 +89,71 @@ namespace SchoolApiSrc.Controllers
         }
 
 
-        [HttpPatch("{id}")]
-        public ActionResult PatchCourse(int id, [FromBody] Course course)
+        [HttpPatch("{id:int}", Name = "PatchCourseDto")]
+        public async Task<ActionResult> PatchCourseDto(int? id, [FromBody] JsonPatchDocument<CourseUpdateDTO> patchEntity)
         {
-            if (id != course.CourseId)
+            if (id is null || !ModelState.IsValid || patchEntity is null)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
+            // get entity to update
+            var course = _unitOfWork.CourseService.Get(id.Value);
+            if (course is null)
+            {
+                return NotFound();
+            }
+
+            // map that entity with defined DTO 
+            var objDto = _mapper.Map<CourseUpdateDTO>(course);
+            // apply HttpPatch
+            patchEntity.ApplyTo(objDto, ModelState);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // map the result back to entity
+            // NOTE: without this mapping back. operation of HttpPatch will not be applied
+            _mapper.Map(objDto, course);
+            await _unitOfWork.SaveChangesAsync();
             return NoContent();
         }
 
+        [HttpPatch("{id:int}", Name = "PatchCourse")]
+        public async Task<IActionResult> PatchCourse(int? id, [FromBody] JsonPatchDocument<Course> patchDoc)
+        {
+            if (id is null || patchDoc is null)
+            {
+                return BadRequest(ModelState);
+            }
 
-        [HttpDelete("{id}")]
+            var course = _unitOfWork.CourseService.Get(id.Value);
+            if (course is null)
+            {
+                return NotFound();
+            }
+
+            patchDoc.ApplyTo(course, ModelState);
+            // var isValidModel = TryValidateModel(course);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _unitOfWork.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpDelete("{id:int}", Name = nameof(DeleteCourse))]
         public async Task<IActionResult> DeleteCourse(int id)
         {
-            var courseToRemove = await _unitOfWork.CourseService.Get(id);
+            var courseToRemove = _unitOfWork.CourseService.Get(id);
+            if (courseToRemove is null)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
                 _unitOfWork.CourseService.Remove(courseToRemove);
@@ -99,25 +170,24 @@ namespace SchoolApiSrc.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> PostCourse([FromBody] Course course)
+        public async Task<IActionResult> PostCourse([FromBody] CourseCreateDTO courseCreateDTO)
         {
-
             // NOTE: When add new course with the `custom ID as auto increment` 
             // DON'T add the ID. Just add all other properties WITHOUT ID. 
             // EF Core will automatically add the ID with advancing of 1 for you.
 
             // If you ignore preceding NOTE and insert ID field when adding new course
             // you will FAILED without specified error from the system! 
-            var newCourse = new Course
+            if (courseCreateDTO is null)
             {
-                CourseId = course.CourseId,
-                CourseName = course.CourseName,
-                DepartmentId = course.DepartmentId
-            };
+                return BadRequest(ModelState);
+            }
 
+            // mapper.Map<DestinationClass>(sourceObject);
+            var objDto = _mapper.Map<Course>(courseCreateDTO);
             try
             {
-                await _unitOfWork.CourseService.Create(newCourse);
+                await _unitOfWork.CourseService.Create(objDto);
                 await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -126,7 +196,7 @@ namespace SchoolApiSrc.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return CreatedAtRoute(nameof(GetCourseById), new { courseId = newCourse.CourseId }, newCourse);
+            return CreatedAtRoute(nameof(GetCourseById), new { id = objDto.CourseId }, objDto); // id must be matched with the `id` parameter in GetCourseById
         }
     }
 }
