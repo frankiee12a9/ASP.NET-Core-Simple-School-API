@@ -3,48 +3,23 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SchoolApiSrc.Data;
 
 namespace SchoolApiSrc.Migrations
 {
     [DbContext(typeof(SchoolContext))]
-    partial class SchoolContextModelSnapshot : ModelSnapshot
+    [Migration("20210819040020_SpecifyPKsForLecturerAndStudent")]
+    partial class SpecifyPKsForLecturerAndStudent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.9")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("SchoolApiSrc.Models.AppLoginInfo", b =>
-                {
-                    b.Property<int>("AppLoginId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("HashedPassword")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("JwtKey")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("AppLoginId");
-
-                    b.ToTable("AppLoginInfos");
-                });
 
             modelBuilder.Entity("SchoolApiSrc.Models.Course", b =>
                 {
@@ -211,7 +186,7 @@ namespace SchoolApiSrc.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("AppLoginInfoID")
+                    b.Property<int>("AppLoginId")
                         .HasColumnType("int");
 
                     b.Property<int>("DepartmentId")
@@ -226,9 +201,19 @@ namespace SchoolApiSrc.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.Property<byte[]>("PasswordHash")
+                        .HasColumnType("varbinary(max)");
 
-                    b.HasIndex("AppLoginInfoID");
+                    b.Property<byte[]>("PasswordSalt")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("DepartmentId");
 
@@ -238,26 +223,32 @@ namespace SchoolApiSrc.Migrations
                         new
                         {
                             Id = 2000,
+                            AppLoginId = 0,
                             DepartmentId = 4000,
                             Email = "kim@kkk.com",
                             LecturerType = "Professor",
-                            Name = "Kim"
+                            Name = "Kim",
+                            UserId = 0
                         },
                         new
                         {
                             Id = 2001,
+                            AppLoginId = 0,
                             DepartmentId = 4001,
                             Email = "lee@kkk.com",
                             LecturerType = "Professor",
-                            Name = "Lee"
+                            Name = "Lee",
+                            UserId = 0
                         },
                         new
                         {
                             Id = 2002,
+                            AppLoginId = 0,
                             DepartmentId = 4002,
                             Email = "park@kkk.com",
                             LecturerType = "Professor",
-                            Name = "Park"
+                            Name = "Park",
+                            UserId = 0
                         });
                 });
 
@@ -267,9 +258,6 @@ namespace SchoolApiSrc.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("AppLoginInfoID")
-                        .HasColumnType("int");
 
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
@@ -284,8 +272,6 @@ namespace SchoolApiSrc.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AppLoginInfoID");
 
                     b.HasIndex("DepartmentId");
 
@@ -377,34 +363,22 @@ namespace SchoolApiSrc.Migrations
 
             modelBuilder.Entity("SchoolApiSrc.Models.Lecturer", b =>
                 {
-                    b.HasOne("SchoolApiSrc.Models.AppLoginInfo", "AppLoginInfo")
-                        .WithMany()
-                        .HasForeignKey("AppLoginInfoID");
-
                     b.HasOne("SchoolApiSrc.Models.Department", "Department")
                         .WithMany("Lecturers")
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AppLoginInfo");
-
                     b.Navigation("Department");
                 });
 
             modelBuilder.Entity("SchoolApiSrc.Models.Student", b =>
                 {
-                    b.HasOne("SchoolApiSrc.Models.AppLoginInfo", "AppLoginInfo")
-                        .WithMany()
-                        .HasForeignKey("AppLoginInfoID");
-
                     b.HasOne("SchoolApiSrc.Models.Department", "Department")
                         .WithMany("Students")
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("AppLoginInfo");
 
                     b.Navigation("Department");
                 });
