@@ -85,7 +85,6 @@ namespace SchoolApiSrc.Controllers
             return Ok(account.JwtKey);
         }
 
-        // [HttpDelete, Route("api/appauth/deleteuser/{userName}")]
         [HttpDelete("{id:int}", Name = nameof(DeleteUser))]
         public async Task<IActionResult> DeleteUser(int? id)
         {
